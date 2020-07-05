@@ -53,11 +53,33 @@ struct Range
 	}
 };
 
+
 class Interpolation
 {
 public:
 #ifdef INTERPOLATION_LIB_XYVALUES_TYPE
-	using xyValueType = INTERPOLATION_LIB_XYVALUES_TYPE;
+
+	template<class T>
+	class IntegerContainer {
+	public:
+		IntegerContainer(T *values) : _values(values) {}
+
+		double operator[](int index) const {
+			return _values[index];
+		}
+		T &operator[](int index) {
+			return _values[index];
+		}
+		T *getValues() {
+			return _values;
+		}
+
+	private:
+		T *_values;
+	};
+
+	using xyValueType = const IntegerContainer<INTERPOLATION_LIB_XYVALUES_TYPE> &;
+
 #else
 	using xyValueType = double *;
 #endif
@@ -70,7 +92,7 @@ public:
 	static double Step(double minX, double maxX, xyValueType yValues, int numValues, double pointX, double threshold = 1);
 	static double Step(xyValueType xValues, xyValueType yValues, int numValues, double pointX, double threshold = 1);
 
-	static double Linear(xyValueType *yValues, int numValues, double pointX, bool trim = true);
+	static double Linear(xyValueType yValues, int numValues, double pointX, bool trim = true);
 	static double Linear(double minX, double maxX, xyValueType yValues, int numValues, double pointX, bool trim = true);
 	static double Linear(xyValueType xValues, xyValueType yValues, int numValues, double pointX, bool trim = true);
 

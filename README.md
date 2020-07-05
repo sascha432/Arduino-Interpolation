@@ -1,9 +1,28 @@
 # Arduino Interpolation Library
+
 Arduino library that provides interpolation methods step, linear, smooth, catmull spline and constrained spline.
 
 All methods recieves X-Values and Y-Values, the size of this arrays and the X point to interpolate, and return the estimated Y at the point X.
 
+## Modifications
+
+This fork adds a container to pass arrays of any type (uint8_t, int, fixed point etc...) to the Interpolation class
+
+```c++
+#define INTERPOLATION_LIB_XYVALUES_TYPE uint8_t
+
+const int numValues = 9;
+uint8_t xValues[9] = {   5,  12,  30,  50,  60,  70,  74,  84,  92 };
+uint8_t yValues[9] = { 150, 200, 200, 200, 180, 100, 100, 150, 220 };
+
+println(Interpolation::CatmullSpline(xValues, yValues, numValues, xValue));
+...
+```
+
+if `INTERPOLATION_LIB_XYVALUES_TYPE` is undefined, it uses double.
+
 ## Modes
+
 ### Step
 Simple step interpolation. Estimated value is Yn-1 or Yn. The relative 'change point' int he interval (or threshold) is an optional parameter. 0.0 means change at the start of the interval, 1.0 at the and of the interval, and 0.5 in the mid point interval.
 ![Image](https://github.com/luisllamasbinaburo/Arduino-Interpolation/blob/master/images/arduino-interpolation-step.png)
@@ -67,14 +86,14 @@ void loop()
 Aditional utils
 
 ### Float map
-A simple map function that uses templates, so it works with integer (like normal 'map' function), float, double, or any other comparable type. 
+A simple map function that uses templates, so it works with integer (like normal 'map' function), float, double, or any other comparable type.
 ```c++
 Interpolation::Map<float>(2.0, 0.0, 10, 100, 200)
 ```
 
 ### Range generator
-A simple utility that generates static double arrays with fixed size, and values between 'min' and 'max'. Useful for fast generating 
-homogeneously distributed X-values arrays to use as parameter in the interpolations methods. 
+A simple utility that generates static double arrays with fixed size, and values between 'min' and 'max'. Useful for fast generating
+homogeneously distributed X-values arrays to use as parameter in the interpolations methods.
 ```c++
 double*  ptr = Range<size>::Generate(min, max);
 ```
