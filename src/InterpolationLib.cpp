@@ -4,10 +4,10 @@ Copyright (c) 2019 Luis Llamas
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  ****************************************************/
- 
+
  #include "InterpolationLib.h"
 
-double Interpolation::Step(double xValues[], double yValues[], int numValues, double pointX, double threshold)
+double Interpolation::Step(xyValueType xValues, xyValueType yValues, int numValues, double pointX, double threshold)
 {
 	// extremos
 	if (pointX <= xValues[0]) return yValues[0];
@@ -21,7 +21,7 @@ double Interpolation::Step(double xValues[], double yValues[], int numValues, do
 	return t < threshold ? yValues[i] : yValues[i + 1];
 }
 
-double Interpolation::Linear(double xValues[], double yValues[], int numValues, double pointX, bool trim)
+double Interpolation::Linear(xyValueType xValues, xyValueType yValues, int numValues, double pointX, bool trim)
 {
 	if (trim)
 	{
@@ -53,7 +53,7 @@ double Interpolation::Linear(double xValues[], double yValues[], int numValues, 
 
 }
 
-double Interpolation::SmoothStep(double xValues[], double yValues[], int numValues, double pointX, bool trim)
+double Interpolation::SmoothStep(xyValueType xValues, xyValueType yValues, int numValues, double pointX, bool trim)
 {
 	if (trim)
 	{
@@ -72,7 +72,7 @@ double Interpolation::SmoothStep(double xValues[], double yValues[], int numValu
 	return yValues[i] * (1 - t) + yValues[i + 1] * t;
 }
 
-double Interpolation::CatmullSpline(double xValues[], double yValues[], int numValues, double pointX, bool trim)
+double Interpolation::CatmullSpline(xyValueType xValues, xyValueType yValues, int numValues, double pointX, bool trim)
 {
 	if (trim)
 	{
@@ -122,13 +122,13 @@ double Interpolation::CatmullSpline(double xValues[], double yValues[], int numV
 	return rst;
 }
 
-double Interpolation::catmullSlope(double x[], double y[], int n, int i)
+double Interpolation::catmullSlope(xyValueType x, xyValueType y, int n, int i)
 {
 	if (x[i + 1] == x[i - 1]) return 0;
 	return (y[i + 1] - y[i - 1]) / (x[i + 1] - x[i - 1]);
 }
 
-double Interpolation::ConstrainedSpline(double xValues[], double yValues[], int numValues, double pointX, bool trim)
+double Interpolation::ConstrainedSpline(xyValueType xValues, xyValueType yValues, int numValues, double pointX, bool trim)
 {
 	if (trim)
 	{
@@ -164,7 +164,7 @@ double Interpolation::ConstrainedSpline(double xValues[], double yValues[], int 
 }
 
 
-double Interpolation::getFirstDerivate(double x[], double y[], int n, int i)
+double Interpolation::getFirstDerivate(xyValueType x, xyValueType y, int n, int i)
 {
 	double fd1_x;
 
@@ -192,7 +192,7 @@ double Interpolation::getFirstDerivate(double x[], double y[], int n, int i)
 	return fd1_x;
 }
 
-double Interpolation::getLeftSecondDerivate(double x[], double y[], int n, int i)
+double Interpolation::getLeftSecondDerivate(xyValueType x, xyValueType y, int n, int i)
 {
 	auto fdi_x = getFirstDerivate(x, y, n, i);
 	auto fdi_xl1 = getFirstDerivate(x, y, n, i - 1);
@@ -203,7 +203,7 @@ double Interpolation::getLeftSecondDerivate(double x[], double y[], int n, int i
 	return fd2l_x;
 }
 
-double Interpolation::getRightSecondDerivate(double x[], double y[], int numValues, int i)
+double Interpolation::getRightSecondDerivate(xyValueType x, xyValueType y, int numValues, int i)
 {
 	auto fdi_x = getFirstDerivate(x, y, numValues, i);
 	auto fdi_xl1 = getFirstDerivate(x, y, numValues, i - 1);

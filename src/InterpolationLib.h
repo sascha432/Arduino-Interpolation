@@ -4,7 +4,7 @@ Copyright (c) 2019 Luis Llamas
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  ****************************************************/
- 
+
  #ifndef _INTERPOLATIONLIB_h
 #define _INTERPOLATIONLIB_h
 
@@ -53,31 +53,36 @@ struct Range
 	}
 };
 
-
-
 class Interpolation
 {
+public:
+#ifdef INTERPOLATION_LIB_XYVALUES_TYPE
+	using xyValueType = INTERPOLATION_LIB_XYVALUES_TYPE;
+#else
+	using xyValueType = double *;
+#endif
+
 public:
 	template <typename T>
 	static T Map(T x, T in_min, T in_max, T out_min, T out_max);
 
-	static double Step(double yValues[], int numValues, double pointX, double threshold = 1);
-	static double Step(double minX, double maxX, double yValues[], int numValues, double pointX, double threshold = 1);
-	static double Step(double xValues[], double yValues[], int numValues, double pointX, double threshold = 1);
+	static double Step(xyValueType yValues, int numValues, double pointX, double threshold = 1);
+	static double Step(double minX, double maxX, xyValueType yValues, int numValues, double pointX, double threshold = 1);
+	static double Step(xyValueType xValues, xyValueType yValues, int numValues, double pointX, double threshold = 1);
 
-	static double Linear(double yValues[], int numValues, double pointX, bool trim = true);
-	static double Linear(double minX, double maxX, double yValues[], int numValues, double pointX, bool trim = true);
-	static double Linear(double xValues[], double yValues[], int numValues, double pointX, bool trim = true);
+	static double Linear(xyValueType *yValues, int numValues, double pointX, bool trim = true);
+	static double Linear(double minX, double maxX, xyValueType yValues, int numValues, double pointX, bool trim = true);
+	static double Linear(xyValueType xValues, xyValueType yValues, int numValues, double pointX, bool trim = true);
 
-	static double SmoothStep(double xValues[], double yValues[], int numValues, double pointX, bool trim = true);
-	static double CatmullSpline(double xValues[], double yValues[], int numValues, double pointX, bool trim = true);
-	static double ConstrainedSpline(double xValues[], double yValues[], int numValues, double pointX, bool trim = true);
+	static double SmoothStep(xyValueType xValues, xyValueType yValues, int numValues, double pointX, bool trim = true);
+	static double CatmullSpline(xyValueType xValues, xyValueType yValues, int numValues, double pointX, bool trim = true);
+	static double ConstrainedSpline(xyValueType xValues, xyValueType yValues, int numValues, double pointX, bool trim = true);
 
 private:
-	static double catmullSlope(double x[], double y[], int n, int i);
-	static double getFirstDerivate(double x[], double y[], int n, int i);
-	static double getLeftSecondDerivate(double x[], double y[], int n, int i);
-	static double getRightSecondDerivate(double x[], double y[], int n, int i);
+	static double catmullSlope(xyValueType x, xyValueType y, int n, int i);
+	static double getFirstDerivate(xyValueType x, xyValueType y, int n, int i);
+	static double getLeftSecondDerivate(xyValueType x, xyValueType y, int n, int i);
+	static double getRightSecondDerivate(xyValueType x, xyValueType y, int n, int i);
 
 };
 
